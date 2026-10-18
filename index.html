@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,14 +8,32 @@
   <script src="script.js" defer></script>
 </head>
 <body>
-  <h1>Project Companion</h1>
-  <p>Turn your ideas into manageable steps.</p>
+  <a class="skip-link" href="#main">Skip to main content</a>
 
-  <h2>My Projects</h2>
-  <p>Your journey starts with one small step.</p>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">Project Companion</div>
+      <nav aria-label="Main">
+        <ul class="nav-list">
+          <li><a class="nav-link" href="#" aria-current="page">Projects</a></li>
+          <li><span class="nav-link nav-link-soon">Dashboard <small>Soon</small></span></li>
+          <li><span class="nav-link nav-link-soon">Tasks <small>Soon</small></span></li>
+          <li><span class="nav-link nav-link-soon">Settings <small>Soon</small></span></li>
+        </ul>
+      </nav>
+    </aside>
 
-  <button id="create-project">+ Create Project</button>
+    <main id="main" class="main">
+      <header class="page-header">
+        <div>
+          <h1>My Projects</h1>
+          <p class="subtitle">Your journey starts with one small step.</p>
+        </div>
+        <button id="create-project" class="btn btn-primary">+ Create Project</button>
+      </header>
 
-  <div id="project-list"></div>
+      <div id="project-list" class="project-grid"></div>
+    </main>
+  </div>
 </body>
 </html>

@@ -1,4 +1,3 @@
-
 const createProjectButton = document.querySelector("#create-project");
 const projectList = document.querySelector("#project-list");
 
@@ -29,47 +28,40 @@ function displayProjects() {
   projectList.replaceChildren();
 
   projects.forEach((project) => {
-    const card = document.createElement("div");
-    card.style.background = "white";
-    card.style.padding = "20px";
-    card.style.marginTop = "16px";
-    card.style.borderRadius = "10px";
+    const card = document.createElement("article");
+    card.className = "project-card";
 
     const title = document.createElement("h3");
     title.textContent = project.name;
 
     const progress = document.createElement("p");
+    progress.className = "project-progress";
     const completed = project.tasks.filter(task => task.done).length;
     progress.textContent =
       `${completed} of ${project.tasks.length} tasks completed`;
 
     const taskForm = document.createElement("form");
-    taskForm.style.display = "flex";
-    taskForm.style.gap = "8px";
-    taskForm.style.flexWrap = "wrap";
+    taskForm.className = "task-form";
 
     const taskInput = document.createElement("input");
     taskInput.type = "text";
+    taskInput.className = "task-input";
     taskInput.placeholder = "Enter a task...";
     taskInput.setAttribute("aria-label", `New task for ${project.name}`);
-    taskInput.style.padding = "10px";
-    taskInput.style.border = "1px solid #ccc";
-    taskInput.style.borderRadius = "6px";
-    taskInput.style.flex = "1";
-    taskInput.style.minWidth = "150px";
 
     const addTaskButton = document.createElement("button");
     addTaskButton.type = "submit";
+    addTaskButton.className = "btn btn-primary";
     addTaskButton.textContent = "Add Task";
 
     taskForm.append(taskInput, addTaskButton);
 
     const taskList = document.createElement("ul");
-    taskList.style.paddingLeft = "20px";
+    taskList.className = "task-list";
 
     project.tasks.forEach((task) => {
       const item = document.createElement("li");
-      item.style.marginTop = "12px";
+      item.className = "task-item";
 
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
@@ -77,12 +69,11 @@ function displayProjects() {
       checkbox.setAttribute("aria-label", `Complete ${task.text}`);
 
       const taskText = document.createElement("span");
-      taskText.textContent = ` ${task.text}`;
-      taskText.style.marginRight = "12px";
+      taskText.className = "task-text";
+      taskText.textContent = task.text;
 
       if (task.done) {
-        taskText.style.textDecoration = "line-through";
-        taskText.style.color = "#687086";
+        taskText.classList.add("task-done");
       }
 
       checkbox.addEventListener("change", () => {
@@ -93,9 +84,9 @@ function displayProjects() {
 
       const deleteTaskButton = document.createElement("button");
       deleteTaskButton.type = "button";
+      deleteTaskButton.className = "btn btn-danger btn-small";
       deleteTaskButton.textContent = "Delete";
-      deleteTaskButton.style.padding = "6px 10px";
-      deleteTaskButton.style.background = "#d9534f";
+      deleteTaskButton.setAttribute("aria-label", `Delete task ${task.text}`);
 
       deleteTaskButton.addEventListener("click", () => {
         project.tasks = project.tasks.filter(
@@ -129,11 +120,13 @@ function displayProjects() {
       displayProjects();
     });
 
+    const actions = document.createElement("div");
+    actions.className = "project-actions";
+
     const deleteProjectButton = document.createElement("button");
     deleteProjectButton.type = "button";
+    deleteProjectButton.className = "btn btn-danger btn-small";
     deleteProjectButton.textContent = "Delete Project";
-    deleteProjectButton.style.background = "#d9534f";
-    deleteProjectButton.style.marginTop = "12px";
 
     deleteProjectButton.addEventListener("click", () => {
       if (confirm(`Delete the project "${project.name}" and its tasks?`)) {
@@ -143,14 +136,9 @@ function displayProjects() {
       }
     });
 
-    card.append(
-      title,
-      progress,
-      taskForm,
-      taskList,
-      deleteProjectButton
-    );
+    actions.appendChild(deleteProjectButton);
 
+    card.append(title, progress, taskForm, taskList, actions);
     projectList.appendChild(card);
   });
 }
@@ -172,5 +160,4 @@ createProjectButton.addEventListener("click", () => {
   displayProjects();
 });
 
-saveProjects();
 displayProjects();
