@@ -1,0 +1,133 @@
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #6558d3;
+  --primary-dark: #5144bb;
+  --background: #f5f6fb;
+  --surface: #ffffff;
+  --text: #20243a;
+  --muted: #747b91;
+  --border: #e7e9f2;
+  --danger: #d9534f;
+}
+
+body {
+  margin: 0;
+  padding: 32px 20px;
+  font-family: Arial, sans-serif;
+  background: var(--background);
+  color: var(--text);
+}
+
+body > h1,
+body > p,
+body > h2,
+body > #create-project,
+body > #project-list {
+  width: 100%;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+h1 {
+  margin-top: 12px;
+  margin-bottom: 8px;
+  font-size: clamp(28px, 4vw, 38px);
+}
+
+h2 {
+  margin-top: 36px;
+  margin-bottom: 12px;
+}
+
+h3 {
+  margin-top: 0;
+  font-size: 20px;
+}
+
+p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+button {
+  padding: 11px 16px;
+  border: none;
+  border-radius: 8px;
+  background: var(--primary);
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+button:hover {
+  background: var(--primary-dark);
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid #bcb5ff;
+  outline-offset: 2px;
+}
+
+#project-list > div {
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 16px rgba(32, 36, 58, 0.04);
+}
+
+#project-list h3 {
+  overflow-wrap: anywhere;
+}
+
+#project-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+#project-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+#project-list li span {
+  flex: 1;
+  min-width: 100px;
+  overflow-wrap: anywhere;
+}
+
+#project-list li button {
+  padding: 7px 10px;
+  border-radius: 7px;
+  background: #fcebea;
+  color: #a62d29;
+  font-size: 13px;
+}
+
+#project-list li button:hover {
+  background: #f6d4d2;
+}
+
+#project-list input[type="text"] {
+  border: 1px solid var(--border) !important;
+  font: inherit;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 24px 14px;
+  }
+
+  #project-list > div {
+    padding: 16px !important;
+  }
+}
