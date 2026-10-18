@@ -1,6 +1,9 @@
 const createProjectButton = document.querySelector("#create-project");
 const projectList = document.querySelector("#project-list");
 
+const emptyState = document.querySelector("#empty-state");
+const emptyCreateButton = document.querySelector("#empty-create");
+
 let projects = JSON.parse(localStorage.getItem("projects")) || [];
 
 // Convert projects from the previous version into the new format.
@@ -27,6 +30,8 @@ function saveProjects() {
 function displayProjects() {
   projectList.replaceChildren();
 
+  emptyState.hidden = projects.length > 0;
+
   projects.forEach((project) => {
     const card = document.createElement("article");
     card.className = "project-card";
@@ -34,11 +39,30 @@ function displayProjects() {
     const title = document.createElement("h3");
     title.textContent = project.name;
 
+    // 1. Work out the numbers first...
+    const completed = project.tasks.filter(task => task.done).length;
+    const percent = project.tasks.length === 0
+      ? 0
+      : Math.round((completed / project.tasks.length) * 100);
+
+    // 2. ...then use them.
     const progress = document.createElement("p");
     progress.className = "project-progress";
-    const completed = project.tasks.filter(task => task.done).length;
     progress.textContent =
-      `${completed} of ${project.tasks.length} tasks completed`;
+      `${completed} of ${project.tasks.length} tasks completed (${percent}%)`;
+
+    const bar = document.createElement("div");
+    bar.className = "progress-bar";
+    bar.setAttribute("role", "progressbar");
+    bar.setAttribute("aria-label", `${project.name} progress`);
+    bar.setAttribute("aria-valuemin", "0");
+    bar.setAttribute("aria-valuemax", "100");
+    bar.setAttribute("aria-valuenow", String(percent));
+
+    const fill = document.createElement("div");
+    fill.className = "progress-fill";
+    fill.style.width = `${percent}%`;
+    bar.appendChild(fill);
 
     const taskForm = document.createElement("form");
     taskForm.className = "task-form";
@@ -138,12 +162,12 @@ function displayProjects() {
 
     actions.appendChild(deleteProjectButton);
 
-    card.append(title, progress, taskForm, taskList, actions);
+    card.append(title, progress, bar, taskForm, taskList, actions);
     projectList.appendChild(card);
   });
 }
 
-createProjectButton.addEventListener("click", () => {
+function createProject() {
   const projectName = prompt("What is the name of your project?");
 
   if (projectName === null || !projectName.trim()) {
@@ -158,6 +182,10 @@ createProjectButton.addEventListener("click", () => {
 
   saveProjects();
   displayProjects();
-});
+}
 
+createProjectButton.addEventListener("click", createProject);
+emptyCreateButton.addEventListener("click", createProject);
+
+// Draw everything once when the page first loads.
 displayProjects();
