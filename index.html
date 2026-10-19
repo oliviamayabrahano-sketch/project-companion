@@ -41,5 +41,16 @@
       </section>
     </main>
   </div>
+    <dialog id="project-dialog" class="dialog" aria-labelledby="dialog-title">
+    <form id="project-form" method="dialog">
+      <h2 id="dialog-title">New project</h2>
+      <label for="project-name-input">Project name</label>
+      <input id="project-name-input" class="task-input" type="text" maxlength="80" required>
+      <div class="dialog-actions">
+        <button type="button" id="project-cancel" class="btn btn-secondary">Cancel</button>
+        <button type="submit" class="btn btn-primary">Create</button>
+      </div>
+    </form>
+  </dialog>
 </body>
 </html>

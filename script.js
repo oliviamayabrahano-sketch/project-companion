@@ -4,6 +4,14 @@ const projectList = document.querySelector("#project-list");
 const emptyState = document.querySelector("#empty-state");
 const emptyCreateButton = document.querySelector("#empty-create");
 
+const projectDialog = document.querySelector("#project-dialog");
+const projectForm = document.querySelector("#project-form");
+const projectNameInput = document.querySelector("#project-name-input");
+const projectCancel = document.querySelector("#project-cancel");
+
+// Remembers which project's task box to focus after a redraw.
+let focusProjectId = null;
+
 let projects = JSON.parse(localStorage.getItem("projects")) || [];
 
 // Convert projects from the previous version into the new format.
@@ -68,6 +76,7 @@ function displayProjects() {
     taskForm.className = "task-form";
 
     const taskInput = document.createElement("input");
+    taskInput.dataset.projectId = project.id;
     taskInput.type = "text";
     taskInput.className = "task-input";
     taskInput.placeholder = "Enter a task...";
@@ -140,6 +149,7 @@ function displayProjects() {
         done: false
       });
 
+      focusProjectId = project.id;
       saveProjects();
       displayProjects();
     });
@@ -165,24 +175,46 @@ function displayProjects() {
     card.append(title, progress, bar, taskForm, taskList, actions);
     projectList.appendChild(card);
   });
+
+  if (focusProjectId !== null) {
+    const boxes = projectList.querySelectorAll(".task-input");
+    const box = Array.from(boxes).find(
+      input => input.dataset.projectId === String(focusProjectId)
+    );
+    if (box) box.focus();
+    focusProjectId = null;
+  }
 }
 
 function createProject() {
-  const projectName = prompt("What is the name of your project?");
+  projectNameInput.value = "";
+  projectDialog.showModal();
+  projectNameInput.focus();
+}
 
-  if (projectName === null || !projectName.trim()) {
+projectForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const projectName = projectNameInput.value.trim();
+  if (!projectName) {
+    projectNameInput.focus();
     return;
   }
 
   projects.push({
     id: Date.now() + Math.random(),
-    name: projectName.trim(),
+    name: projectName,
     tasks: []
   });
 
   saveProjects();
+  projectDialog.close();
   displayProjects();
-}
+});
+
+projectCancel.addEventListener("click", () => {
+  projectDialog.close();
+});
 
 createProjectButton.addEventListener("click", createProject);
 emptyCreateButton.addEventListener("click", createProject);
