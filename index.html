@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Project Companion</title>
   <link rel="stylesheet" href="style.css">
-    <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/main.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
@@ -15,8 +15,8 @@
       <div class="brand">Project Companion</div>
       <nav aria-label="Main">
         <ul class="nav-list">
-          <li><a class="nav-link" href="#" aria-current="page">Projects</a></li>
-          <li><span class="nav-link nav-link-soon">Dashboard <small>Soon</small></span></li>
+          <li><a class="nav-link" href="#dashboard" data-view="dashboard">Dashboard</a></li>
+          <li><a class="nav-link" href="#projects" data-view="projects">Projects</a></li>
           <li><span class="nav-link nav-link-soon">Tasks <small>Soon</small></span></li>
           <li><span class="nav-link nav-link-soon">Settings <small>Soon</small></span></li>
         </ul>
@@ -24,21 +24,37 @@
     </aside>
 
     <main id="main" class="main">
-      <header class="page-header">
-        <div>
-          <h1>My Projects</h1>
-          <p class="subtitle">Your journey starts with one small step.</p>
-        </div>
-        <button id="create-project" class="btn btn-primary">+ Create Project</button>
-      </header>
 
-      <div id="project-list" class="project-grid"></div>
-
-      <section id="empty-state" class="empty-state" hidden>
-        <h2>Welcome! Let's start your first project.</h2>
-        <p>Projects hold your goals and the small tasks that get you there. Try something like "Learn JavaScript" or "Finish my portfolio".</p>
-        <button id="empty-create" class="btn btn-primary">Create your first project</button>
+      <!-- ===== Dashboard page ===== -->
+      <section id="view-dashboard">
+        <header class="page-header">
+          <div>
+            <h1>Dashboard</h1>
+            <p class="subtitle" id="greeting"></p>
+          </div>
+        </header>
+        <div id="dashboard-content" class="dashboard"></div>
       </section>
+
+      <!-- ===== Projects page ===== -->
+      <section id="view-projects" hidden>
+        <header class="page-header">
+          <div>
+            <h1>My Projects</h1>
+            <p class="subtitle">Your journey starts with one small step.</p>
+          </div>
+          <button id="create-project" class="btn btn-primary">+ Create Project</button>
+        </header>
+
+        <div id="project-list" class="project-grid"></div>
+
+        <section id="empty-state" class="empty-state" hidden>
+          <h2>Welcome! Let's start your first project.</h2>
+          <p>Projects hold your goals and the small tasks that get you there. Try something like "Learn JavaScript" or "Finish my portfolio".</p>
+          <button id="empty-create" class="btn btn-primary">Create your first project</button>
+        </section>
+      </section>
+
     </main>
   </div>
 
@@ -63,7 +79,7 @@
     </div>
   </dialog>
 
-    <dialog id="edit-dialog" class="dialog" aria-labelledby="edit-title">
+  <dialog id="edit-dialog" class="dialog" aria-labelledby="edit-title">
     <form id="edit-form">
       <h2 id="edit-title">Edit task</h2>
 
