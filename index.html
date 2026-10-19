@@ -62,5 +62,29 @@
       <button type="button" id="confirm-ok" class="btn btn-danger">Delete</button>
     </div>
   </dialog>
+
+    <dialog id="edit-dialog" class="dialog" aria-labelledby="edit-title">
+    <form id="edit-form">
+      <h2 id="edit-title">Edit task</h2>
+
+      <label for="edit-text">Task</label>
+      <input id="edit-text" class="task-input" type="text" maxlength="120" required>
+
+      <label for="edit-date">Due date (optional)</label>
+      <input id="edit-date" class="task-input" type="date">
+
+      <label for="edit-priority">Priority</label>
+      <select id="edit-priority" class="task-input">
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+
+      <div class="dialog-actions">
+        <button type="button" id="edit-cancel" class="btn btn-secondary">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+    </form>
+  </dialog>
 </body>
 </html>

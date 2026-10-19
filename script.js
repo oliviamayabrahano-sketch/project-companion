@@ -15,12 +15,27 @@ const confirmMessage = document.querySelector("#confirm-message");
 const confirmOk = document.querySelector("#confirm-ok");
 const confirmCancel = document.querySelector("#confirm-cancel");
 
-// Remembers which project's task box to focus after a redraw.
+const editDialog = document.querySelector("#edit-dialog");
+const editForm = document.querySelector("#edit-form");
+const editText = document.querySelector("#edit-text");
+const editDate = document.querySelector("#edit-date");
+const editPriority = document.querySelector("#edit-priority");
+const editCancel = document.querySelector("#edit-cancel");
+
+// Remember what to focus after a redraw.
 let focusProjectId = null;
+let focusTaskId = null;
+
+// The task currently open in the edit dialog.
+let editingTask = null;
 
 // Remembers what has been typed in each project's "add task" form,
 // so a redraw doesn't erase it.
-const drafts = {};
+const drafts = JSON.parse(localStorage.getItem("drafts")) || {};
+
+function saveDrafts() {
+  localStorage.setItem("drafts", JSON.stringify(drafts));
+}
 
 function getDraft(projectId) {
   if (!drafts[projectId]) {
@@ -110,6 +125,42 @@ confirmCancel.addEventListener("click", () => {
   confirmAction = null;
 });
 
+// ---------- Edit task dialog ----------
+function openEditDialog(task) {
+  editingTask = task;
+  editText.value = task.text;
+  editDate.value = task.dueDate;
+  editPriority.value = task.priority;
+  editDialog.showModal();
+  editText.focus();
+}
+
+editForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const newText = editText.value.trim();
+  if (!newText) {
+    editText.focus();
+    return;
+  }
+
+  editingTask.text = newText;
+  editingTask.dueDate = editDate.value;
+  editingTask.priority = editPriority.value;
+
+  focusTaskId = editingTask.id;
+  editingTask = null;
+
+  saveProjects();
+  editDialog.close();
+  displayProjects();
+});
+
+editCancel.addEventListener("click", () => {
+  editingTask = null;
+  editDialog.close();
+});
+
 // ---------- Drawing the page ----------
 function displayProjects() {
   projectList.replaceChildren();
@@ -190,17 +241,17 @@ function displayProjects() {
     priorityLabel.appendChild(prioritySelect);
 
     extra.append(dateLabel, priorityLabel);
-    
-        // Put back whatever the user had typed before the redraw.
+
+    // Put back whatever the user had typed before the redraw.
     const draft = getDraft(project.id);
     taskInput.value = draft.text;
     dateInput.value = draft.dueDate;
     prioritySelect.value = draft.priority;
 
     // Keep the draft up to date as the user types or picks.
-    taskInput.addEventListener("input", () => { draft.text = taskInput.value; });
-    dateInput.addEventListener("change", () => { draft.dueDate = dateInput.value; });
-    prioritySelect.addEventListener("change", () => { draft.priority = prioritySelect.value; });
+    taskInput.addEventListener("input", () => { draft.text = taskInput.value; saveDrafts(); });
+    dateInput.addEventListener("change", () => { draft.dueDate = dateInput.value; saveDrafts(); });
+    prioritySelect.addEventListener("change", () => { draft.priority = prioritySelect.value; saveDrafts(); });
 
     taskForm.append(taskInput, addTaskButton, extra);
 
@@ -214,6 +265,7 @@ function displayProjects() {
 
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
+      checkbox.dataset.taskId = task.id;
       checkbox.checked = task.done;
       checkbox.setAttribute("aria-label", `Complete ${task.text}`);
 
@@ -248,8 +300,19 @@ function displayProjects() {
 
       checkbox.addEventListener("change", () => {
         task.done = checkbox.checked;
+        focusTaskId = task.id;
         saveProjects();
         displayProjects();
+      });
+
+      const editTaskButton = document.createElement("button");
+      editTaskButton.type = "button";
+      editTaskButton.className = "btn btn-secondary btn-small";
+      editTaskButton.textContent = "Edit";
+      editTaskButton.setAttribute("aria-label", `Edit task ${task.text}`);
+
+      editTaskButton.addEventListener("click", () => {
+        openEditDialog(task);
       });
 
       const deleteTaskButton = document.createElement("button");
@@ -268,7 +331,11 @@ function displayProjects() {
         });
       });
 
-      item.append(checkbox, main, deleteTaskButton);
+      const buttons = document.createElement("div");
+      buttons.className = "task-buttons";
+      buttons.append(editTaskButton, deleteTaskButton);
+
+      item.append(checkbox, main, buttons);
       taskList.appendChild(item);
     });
 
@@ -290,6 +357,10 @@ function displayProjects() {
         dueDate: dateInput.value
       });
 
+      draft.text = "";
+      draft.dueDate = "";
+      saveDrafts();
+
       focusProjectId = project.id;
       saveProjects();
       displayProjects();
@@ -309,6 +380,8 @@ function displayProjects() {
         `Delete the project "${project.name}" and all of its tasks?`,
         () => {
           projects = projects.filter(item => item.id !== project.id);
+          delete drafts[project.id];
+          saveDrafts();
           saveProjects();
           displayProjects();
         }
@@ -321,6 +394,7 @@ function displayProjects() {
     projectList.appendChild(card);
   });
 
+  // Put the cursor back where the user was working.
   if (focusProjectId !== null) {
     const boxes = projectList.querySelectorAll(".task-input");
     const box = Array.from(boxes).find(
@@ -328,6 +402,15 @@ function displayProjects() {
     );
     if (box) box.focus();
     focusProjectId = null;
+  }
+
+  if (focusTaskId !== null) {
+    const checkboxes = projectList.querySelectorAll("input[type='checkbox']");
+    const target = Array.from(checkboxes).find(
+      input => input.dataset.taskId === String(focusTaskId)
+    );
+    if (target) target.focus();
+    focusTaskId = null;
   }
 }
 

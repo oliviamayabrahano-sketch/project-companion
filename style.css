@@ -280,3 +280,8 @@ h3 { font-size: 1.125rem; }
 .overdue { color: var(--danger); font-weight: 600; }
 
 .dialog p { color: var(--text-muted); margin: 8px 0 0; }
+
+/* ---------- 9. Task buttons and edit dialog ---------- */
+.task-buttons { display: flex; gap: 6px; }
+.btn-secondary.btn-small { padding: 6px 10px; }
+.dialog select.task-input { background: var(--surface); color: var(--text); }
