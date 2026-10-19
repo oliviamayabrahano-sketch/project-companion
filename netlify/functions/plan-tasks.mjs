@@ -117,8 +117,16 @@ export default async (req) => {
   }
 
   if (!response.ok) {
-    // Log only the status number, never the key or the request.
-    console.log("Gemini returned status", response.status);
+    // Log the status and Google's short error message. The message describes
+    // the problem and does not contain the key. Never log the key or request.
+    let detail = "";
+    try {
+      const errorData = await response.json();
+      detail = String(errorData?.error?.message ?? "").slice(0, 300);
+    } catch {
+      detail = "(no error details)";
+    }
+    console.log("Gemini returned status", response.status, detail);
     return reply(502, { error: "ai_error" });
   }
 
