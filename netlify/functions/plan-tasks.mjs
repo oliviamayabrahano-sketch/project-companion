@@ -69,10 +69,22 @@ export default async (req) => {
     return reply(405, { error: "method_not_allowed" });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  // Remove accidental spaces or quotation marks around the pasted key.
+  const apiKey = (process.env.GEMINI_API_KEY ?? "")
+    .trim()
+    .replace(/^["']|["']$/g, "");
+
   if (!apiKey) {
     return reply(500, { error: "not_configured" });
   }
+
+  // TEMPORARY check: logs only the length and yes/no facts, never the key.
+  // Remove this block once the key works.
+  console.log(
+    "Key check: length", apiKey.length,
+    "| has space:", /\s/.test(apiKey),
+    "| has quote:", /["']/.test(apiKey)
+  );
 
   // Read and check the goal.
   let goal = "";
