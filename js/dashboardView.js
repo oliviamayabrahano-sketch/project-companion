@@ -187,6 +187,45 @@ function buildDueSoon(today) {
   return card;
 }
 
+// ---------- Progress for each project ----------
+function buildProjectsProgress() {
+  const card = el("section", "card");
+  card.appendChild(el("h2", "", "Your projects"));
+
+  const list = el("ul", "pp-list");
+
+  state.projects.forEach((project) => {
+    const total = project.tasks.length;
+    const done = project.tasks.filter(task => task.done).length;
+    const percent = total === 0 ? 0 : Math.round((done / total) * 100);
+
+    const item = el("li", "pp-item");
+
+    const head = el("div", "pp-head");
+    head.append(
+      el("span", "due-title", project.name),
+      el("span", "due-when", `${done} of ${total} tasks (${percent}%)`)
+    );
+
+    const bar = el("div", "progress-bar");
+    bar.setAttribute("role", "progressbar");
+    bar.setAttribute("aria-label", `${project.name} progress`);
+    bar.setAttribute("aria-valuemin", "0");
+    bar.setAttribute("aria-valuemax", "100");
+    bar.setAttribute("aria-valuenow", String(percent));
+
+    const fill = el("div", "progress-fill");
+    fill.style.width = `${percent}%`;
+    bar.appendChild(fill);
+
+    item.append(head, bar);
+    list.appendChild(item);
+  });
+
+  card.appendChild(list);
+  return card;
+}
+
 // ---------- The one function other files call ----------
 export function displayDashboard() {
   document.querySelector("#greeting").textContent =
@@ -206,5 +245,10 @@ export function displayDashboard() {
   const lower = el("div", "dash-grid");
   lower.append(buildDonut(stats), buildDueSoon(today));
 
-  content.append(buildNextStep(stats, today), buildStats(stats), lower);
+  content.append(
+    buildNextStep(stats, today),
+    buildStats(stats),
+    lower,
+    buildProjectsProgress()
+  );
 }
