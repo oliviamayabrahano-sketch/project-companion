@@ -35,13 +35,14 @@
       <div id="project-list" class="project-grid"></div>
 
       <section id="empty-state" class="empty-state" hidden>
-      <h2>Welcome! Let's start your first project.</h2>
-      <p>Projects hold your goals and the small tasks that get you there. Try something like "Learn JavaScript" or "Finish my portfolio".</p>
-      <button id="empty-create" class="btn btn-primary">Create your first project</button>
+        <h2>Welcome! Let's start your first project.</h2>
+        <p>Projects hold your goals and the small tasks that get you there. Try something like "Learn JavaScript" or "Finish my portfolio".</p>
+        <button id="empty-create" class="btn btn-primary">Create your first project</button>
       </section>
     </main>
   </div>
-    <dialog id="project-dialog" class="dialog" aria-labelledby="dialog-title">
+
+  <dialog id="project-dialog" class="dialog" aria-labelledby="dialog-title">
     <form id="project-form" method="dialog">
       <h2 id="dialog-title">New project</h2>
       <label for="project-name-input">Project name</label>
@@ -51,6 +52,15 @@
         <button type="submit" class="btn btn-primary">Create</button>
       </div>
     </form>
+  </dialog>
+
+  <dialog id="confirm-dialog" class="dialog" aria-labelledby="confirm-title">
+    <h2 id="confirm-title">Are you sure?</h2>
+    <p id="confirm-message"></p>
+    <div class="dialog-actions">
+      <button type="button" id="confirm-cancel" class="btn btn-secondary">Cancel</button>
+      <button type="button" id="confirm-ok" class="btn btn-danger">Delete</button>
+    </div>
   </dialog>
 </body>
 </html>
